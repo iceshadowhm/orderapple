@@ -1,0 +1,36 @@
+{
+    "name": "Website Monitor",
+    "version": "1.0",
+    "manifest_version": 2,
+    "description": "Working Holiday Visa for New Zealand",
+    "content_scripts": [{
+        "matches": ["http://*/*", "https://*/*"],
+        "js": [
+            //libs
+            "libs/jquery-1.11.1.min.js",
+            //core
+            "core.js",
+            //user script
+            "nz/whv.js",
+            "nz/card.js",
+            "apple/quota.js"
+        ],
+        "run_at": "document_end"
+        }
+    ],
+    "permissions": [
+        "http://*/",
+        "https://*/",
+        "background",
+        "tabs",
+        "notifications"
+    ],
+    "options_page": "tpl/profile.html",
+    "browser_action": {
+        "default_icon": "media/whv.png", // optional 
+        "default_title": "Working Holiday Visa"      // optional; shown in tooltip 
+    },
+    "background": {
+        "scripts": ["background.js"]
+    }
+}
