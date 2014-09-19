@@ -10,16 +10,22 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
 	EditText phoneNumberEditText;
 	Button retryButton;
+	
+	PreferenceHelper mHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		mHelper = PreferenceHelper.getInstance(this);
+		
 		// Get edit text
 		phoneNumberEditText = (EditText) findViewById(R.id.phoneNumberEditText);
 		// Get retry button
@@ -29,22 +35,37 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO: if random reserver number exists, retry
-				sendSMS("TEST-XXXXXX01");
+				sendSMS();
 			}
 		});
 	}
 
-	private void sendSMS(String message) {
+	private void sendSMS() {
+		// Get request number
+		String message = mHelper.getAppleRequestNumber();
+		if(message == null || message.isEmpty())
+		{
+			Toast.makeText(this, "Request Number is Empty", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		// TODO:¡¡Check and work only for valid phone number
 		// Get input phone number
 		String phoneNumber = phoneNumberEditText.getText().toString();
 		// Skip invalid phone number
 		if (phoneNumber == null || phoneNumber.isEmpty()) {
+			Toast.makeText(this, "Your Phone Number is Empty", Toast.LENGTH_SHORT).show();
 			return;
 		}
 
 		// TODO:64500366
-		String applePhoneNumber = "61780317";
+		String applePhoneNumber = mHelper.getApplePhoneNumber();
+		if(applePhoneNumber == null || applePhoneNumber.isEmpty())
+		{
+			Toast.makeText(this, "Apple Phone Number is Empty", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
 		SmsManager manager = SmsManager.getDefault();
 		manager.sendTextMessage(applePhoneNumber, null, message, null, null);
 	}
